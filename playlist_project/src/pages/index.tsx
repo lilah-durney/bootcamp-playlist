@@ -1,5 +1,6 @@
-import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
+import Header from "../components/header";
+import Footer from "../components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,6 +14,13 @@ const geistMono = Geist_Mono({
 
 export default function Home() {
   return (
-    <h1 className="text-4xl font-bold">Hello World</h1>
+    <div className = "min-h-screen flex flex-col">
+        <Header/>
+      <main className = "bg-gray-800 flex-grow flex items-center justify-center">
+          <button className="bg-gray-900 hover:bg-gray-700 text-white font-semibold py-3 px-5 rounded shadow transition duration-100 ease-in-out">Create</button>
+      </main>
+        <Footer/>
+    </div>
+
   );
 }
