@@ -18,7 +18,6 @@ export default function Home() {
         <Header/>
       <main className = "bg-gray-800 flex-grow flex items-center justify-center">
           <button className="bg-gray-900 hover:bg-gray-700 text-white font-semibold py-3 px-5 rounded shadow transition duration-100 ease-in-out">Create</button>
- 
       </main>
         <Footer/>
     </div>
