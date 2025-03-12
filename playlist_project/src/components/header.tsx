@@ -1,5 +1,6 @@
 import React from 'react';
-
+import PlaylistIndex from '@/pages/playlists';
+import Link from "next/link";
 
 const Header = () => {
     return (
@@ -8,8 +9,8 @@ const Header = () => {
         <h1 className="text-xl font-bold">Playlist Creator</h1>
         <nav>
           <ul className="flex space-x-6">
-            <li><a href="#" className="hover:text-gray-400">Home</a></li>
-            <li><a href="#" className="hover:text-gray-400">Playlists</a></li>
+            <Link href="/" className="hover:text-gray-400">Home</Link>
+            <Link href="/playlists" className="hover:text-gray-400">Playlists</Link>
           </ul>
         </nav>
       </div>
