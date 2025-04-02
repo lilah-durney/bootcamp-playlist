@@ -36,7 +36,7 @@ function PlaylistDetails() {
         }
         
         addSongToPlaylist(playlist.id, newSong);
-        
+
         
         
     };
@@ -102,7 +102,10 @@ function PlaylistDetails() {
                         <div className="text-gray-400 font-semibold mr-4">{index + 1}</div>
                     
                                 
-                        <img src={song.albumCover} alt={`${song.title} album cover`} className="w-12 h-12 rounded" />
+                        {song.albumCover && (
+                            <img src={song.albumCover} alt={`${song.title} album cover`} className="w-12 h-12 rounded" />
+                        )}
+
                             
                         <div className="ml-5 flex-1">
                             <div className="font-semibold">{song.title}</div>

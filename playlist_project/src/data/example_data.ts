@@ -11,6 +11,7 @@
              { id: "s2", title: "Lazy Afternoon", artist: "Smooth Sounds", album: "Daydream", duration: "4:05" },
              { id: "s3", title: "Night Lights", artist: "City Groove", album: "Metropolis", duration: "3:50" },
          ],
+
      },
      {
          id: "2",
@@ -21,6 +22,7 @@
              { id: "s5", title: "Push It", artist: "Fitness Flow", album: "Adrenaline", duration: "4:00" },
              { id: "s6", title: "Last Rep", artist: "Gym Heroes", album: "Victory", duration: "3:40" },
          ],
+         
      },
      {
          id: "3",
@@ -31,5 +33,6 @@
              { id: "s8", title: "City Lights", artist: "Urban Tales", album: "Nightlife", duration: "3:55" },
              { id: "s9", title: "Quiet Moments", artist: "Solo Sound", album: "Reflection", duration: "4:05" },
          ],
+        
      },
  ];
