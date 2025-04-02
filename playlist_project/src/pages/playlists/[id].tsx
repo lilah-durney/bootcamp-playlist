@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import { usePlaylistContext } from "@/context/PlaylistContext";
 import { Song } from "@/types/playlist";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SongModal from "@/components/songmodal"
+import type {Track} from "@/types/playlist";
+
 
 function PlaylistDetails() {
     const router = useRouter();
@@ -14,23 +16,39 @@ function PlaylistDetails() {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
 
+
     if (!playlist) {
         return <h1 className="text-white mt-10 ml-6">Playlist not found</h1>;
     }
 
-    const handleAddSong = (songTitle: string, songArtist: string, songAlbum: string, songDuration: string) => {
-        if (!songTitle || !songArtist) return;
+    const handleAddSong = (track: Track) => {
+        if (!track.name || !track.artists.length) {
+            return;
+        }
+
         const newSong: Song = {
-            id: Math.random().toString(),
-            title: songTitle,
-            artist: songArtist,
-            album: songAlbum,
-            duration: songDuration,
-        };
+            id: track.id,
+            title: track.name,
+            artist: track.artists[0]?.name || "Unkown Artist",
+            album: track.album.name,
+            duration: formatDuration(track.duration_ms),
+            albumCover: track.album.images.length > 0 ? track.album.images[0].url : "",
+        }
+        
         addSongToPlaylist(playlist.id, newSong);
-        setSongTitle("");
-        setSongArtist("");
+        
+        
+        
     };
+
+    const formatDuration = (ms: number): string => {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, "0");
+        return `${minutes}:${seconds}`;
+    };
+    
+
+
 
     return (
         <div className="flex flex-col p-6 rounded-lg shadow-md text-white ml-20 mr-20">
@@ -81,8 +99,11 @@ function PlaylistDetails() {
             <div className="flex flex-col gap-2">
                 {playlist.songs.map((song, index) => (
                     <div key={song.id} className="bg-gray-800 p-4 rounded-lg flex items-center py-2 hover:bg-gray-700 transition rounded-md">
-                        <div className="text-gray-400 font-semibold">{index + 1}</div>
+                        <div className="text-gray-400 font-semibold mr-4">{index + 1}</div>
                     
+                                
+                        <img src={song.albumCover} alt={`${song.title} album cover`} className="w-12 h-12 rounded" />
+                            
                         <div className="ml-5 flex-1">
                             <div className="font-semibold">{song.title}</div>
                             <div className="text-gray-400 text-sm">{song.artist}</div>
