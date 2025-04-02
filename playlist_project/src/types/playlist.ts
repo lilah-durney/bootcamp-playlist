@@ -5,8 +5,8 @@ export interface Song {
     title: string;
     artist: string;
     album: string;
-    duration?: string | null;
-    albumCover?: string | null;
+    duration: string;
+    albumCover: string;
 }
 
 //Define a Playlist interace that includes an array of Song objects
