@@ -5,10 +5,6 @@ const clientId = process.env.SPOTIFY_CLIENT_ID;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 
-console.log("CLIENT ID:", clientId ? "set" : "missing");
-console.log("CLIENT SECRET:", clientSecret ? "set" : "missing");
-
-
 
 
 async function getSpotifyToken() {
@@ -48,6 +44,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!q || typeof q!=="string") {
         return res.status(400).json({error: "Missing or invalid query parameter"});
     }
+
+    if (!clientId || !clientSecret) {
+        console.error("Missing Spotify credentials in environment variables");
+        return res.status(500).json({ error: "Spotify credentials not set on server" });
+      }
+    
+      console.log("Spotify credentials present");
 
     try {
         const accessToken = await getSpotifyToken(); //Get token 
