@@ -9,15 +9,14 @@ const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => v
 
     const searchTracks = async (searchTerm: string) => {
         try {
-            const response = await fetch(`/api/spotify-search?q=${encodeURIComponent(searchTerm)}`);
-            const data = await response.json();
-            console.log("Search results:", data.tracks)
-            setSearchResults(data.tracks);
+          const response = await fetch(`/api/spotify-search?q=${encodeURIComponent(searchTerm)}`);
+          const data = await response.json();
+          console.log("Search results:", data.tracks)
+          setSearchResults(data.tracks ?? []);
         } catch(error) {
-            console.error("Error fetching songs:", error);
+          console.error("Error fetching songs:", error);
         }
-
-    }
+      }      
 
 
     useEffect(() => {

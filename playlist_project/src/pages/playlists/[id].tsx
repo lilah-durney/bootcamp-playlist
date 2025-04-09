@@ -95,7 +95,7 @@ function PlaylistDetails() {
 
             <div className="my-4 border-t border-gray-700"></div>
             <div className="flex flex-col gap-2">
-                {playlist.songs.map((song, index) => (
+                {playlist.songs?.map((song, index) => (
                     <div key={song.id} className="bg-gray-800 p-4 rounded-lg flex items-center py-2 hover:bg-gray-700 transition rounded-md">
                         <div className="text-gray-400 font-semibold mr-4">{index + 1}</div>
                     
