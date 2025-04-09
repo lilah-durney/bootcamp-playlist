@@ -19,6 +19,12 @@ async function getSpotifyToken() {
         body: 'grant_type=client_credentials',
     });
 
+    if (!response.ok) {
+        const err = await response.text();
+        console.error("Failed to fetch Spotify token:", err);
+        throw new Error("Spotify token request failed");
+      }
+
     const data = await response.json();
     return data.access_token; // Access token needed for API calls
 }
