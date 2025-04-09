@@ -5,6 +5,11 @@ const clientId = process.env.SPOTIFY_CLIENT_ID;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 
+console.log("CLIENT ID:", clientId ? "set" : "missing");
+console.log("CLIENT SECRET:", clientSecret ? "set" : "missing");
+
+
+
 
 async function getSpotifyToken() {
     const authString = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
