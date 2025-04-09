@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Playlist } from '@/types/playlist';
 
-
+// Temporary in-memory store
 let playlists: Playlist[] = [];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

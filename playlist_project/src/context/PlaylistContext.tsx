@@ -6,8 +6,8 @@ interface PlaylistContextType {
   addPlaylist: (title: string, description: string) => Promise<void>;
   updatePlaylistTitleAndDescription: (id: string, title: string, description: string) => Promise<void>;
   deletePlaylist: (id: string) => Promise<void>;
-  addSongToPlaylist: (playlistId: string, song: Song) => Promise<void>;
-  removeSongFromPlaylist: (playlistId: string, songId: string) => Promise<void>;
+  addSongToPlaylist: (playlistId: string, song: Song) => void;
+  removeSongFromPlaylist: (playlistId: string, songId: string) => void;
 }
 
 const PlaylistContext = createContext<PlaylistContextType | undefined>(undefined);
@@ -26,6 +26,7 @@ export const PlaylistProvider = ({ children }: { children: React.ReactNode }) =>
         console.error('Error fetching playlists:', error);
       }
     };
+
     fetchPlaylists();
   }, []);
 
@@ -71,40 +72,23 @@ export const PlaylistProvider = ({ children }: { children: React.ReactNode }) =>
     }
   };
 
-  const addSongToPlaylist = async (playlistId: string, song: Song) => {
-    try {
-      await fetch(`/api/playlists/${playlistId}/songs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(song),
-      });
-      setPlaylists((prev) =>
-        prev.map((p) =>
-          p.id === playlistId ? { ...p, songs: [...p.songs, song] } : p
-        )
-      );
-    } catch (error) {
-      console.error('Error adding song:', error);
-    }
+  //these are being handled locally right now, without internal API
+  const addSongToPlaylist = (playlistId: string, song: Song) => {
+    setPlaylists((prev) =>
+      prev.map((p) =>
+        p.id === playlistId ? { ...p, songs: [...p.songs, song] } : p
+      )
+    );
   };
 
-  const removeSongFromPlaylist = async (playlistId: string, songId: string) => {
-    try {
-      await fetch(`/api/playlists/${playlistId}/songs`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ songId }),
-      });
-      setPlaylists((prev) =>
-        prev.map((p) =>
-          p.id === playlistId
-            ? { ...p, songs: p.songs.filter((s) => s.id !== songId) }
-            : p
-        )
-      );
-    } catch (error) {
-      console.error('Error removing song:', error);
-    }
+  const removeSongFromPlaylist = (playlistId: string, songId: string) => {
+    setPlaylists((prev) =>
+      prev.map((p) =>
+        p.id === playlistId
+          ? { ...p, songs: p.songs.filter((s) => s.id !== songId) }
+          : p
+      )
+    );
   };
 
   return (
