@@ -124,9 +124,7 @@ function PlaylistDetails() {
                     </div>
                 ))}
             </div>
-
             
-
             {isEditing && (
                 <div>
                     <div 
