@@ -1,9 +1,9 @@
  // example_data.ts 
- import {Playlist} from "@/types/playlist";
+ import {PlaylistObj} from "@/types/playlist";
 
- export const playlists: Playlist[] = [
+ export const playlists: PlaylistObj[] = [
     {
-        id: "1",
+        _id: "1",
         title: "Chill Vibes",
         description: "Relaxing tracks for a calm day.",
         songs: [

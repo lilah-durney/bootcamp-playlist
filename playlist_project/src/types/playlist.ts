@@ -10,8 +10,8 @@ export interface Song {
 }
 
 //Define a Playlist interace that includes an array of Song objects
-export interface Playlist {
-    id: string;
+export interface PlaylistObj {
+    _id: string;
     title: string;
     description: string;
     songs: Song[]

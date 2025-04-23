@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import type {Track} from "@/types/playlist"
+import {CheckCircle} from "lucide-react"
 
 const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => void; onSave: (track: Track) => void}) => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [searchResults, setSearchResults] = useState<Track[]>([]);
+    const [trackAddedId, setTrackAddedId] = useState<string | null>(null);
+    const [anySongAdded, setAnySongAdded] = useState(false)
 
 
     const searchTracks = async (searchTerm: string) => {
@@ -24,6 +27,8 @@ const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => v
         if (!isOpen) {
             setSearchTerm(''); 
             setSearchResults([]); 
+            setAnySongAdded(false);
+
         }
     }, [isOpen]);
 
@@ -73,12 +78,23 @@ const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => v
                                         <p className="text-sm text-gray-400">{track.artists[0]?.name} • {track.album.name}</p>
                                     </div>
                                 </div>
-                                <button
+                                {trackAddedId === track.id ? (
+                                    <CheckCircle className = "text-green-500 w-6 h-6 animate-bounce"/>
+                                ) : (
+                                    <button
                                     className="ml-2 bg-green-500 px-4 py-2 rounded text-white hover:bg-green-600 transition"
-                                    onClick={() => onSave(track)}
+                                    onClick={() => {
+                                        onSave(track)
+                                        setTrackAddedId(track.id)
+                                        setTimeout(() => setTrackAddedId(null), 2000);
+                                        setAnySongAdded(true);
+                                    }}
                                 >
                                     Add
                                 </button>
+
+                                )}
+
                             </li>
                         ))}
                     </ul>
@@ -89,8 +105,8 @@ const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => v
                     <button
                         className="mt-5 w-24 h-12 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded shadow transition duration-100 ease-in-out"
                         onClick={onClose}
-                    >
-                        Cancel
+                    > {anySongAdded ? "Done" : "Cancel"}
+            
                     </button>
                 </div>
             </div>
