@@ -4,30 +4,47 @@ import { Song } from "@/types/playlist";
 import { useState, useEffect } from "react";
 import SongModal from "@/components/songmodal"
 import type {Track} from "@/types/playlist";
+import { v4 as uuidv4 } from 'uuid';
 
 
 function PlaylistDetails() {
     const router = useRouter();
     const { id } = router.query;
     const { playlists, addSongToPlaylist, removeSongFromPlaylist, updatePlaylistTitleAndDescription, deletePlaylist } = usePlaylistContext();
-    const playlist = playlists.find((p) => p.id === id);
-    const [songTitle, setSongTitle] = useState("");
-    const [songArtist, setSongArtist] = useState("");
+    const playlist = playlists.find((p) => p._id === id);
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [editedTitle, setEditedTitle] = useState("");
+    const [editedDescription, setEditedDescription] = useState("");
 
+
+    useEffect(() => {
+        if (playlist) {
+            setEditedTitle(playlist.title);
+            setEditedDescription(playlist.description)
+        }
+    },[playlist]);
+
+
+    
+    if (!playlists.length) {
+        return null;
+    }
 
     if (!playlist) {
         return <h1 className="text-white mt-10 ml-6">Playlist not found</h1>;
     }
 
+
     const handleAddSong = (track: Track) => {
         if (!track.name || !track.artists.length) {
             return;
         }
+        console.log("track:",track);
 
         const newSong: Song = {
-            id: track.id,
+            //Each Song object has a UNIQUE id, not based on Spotify's assigned id, to allow duplicate songs to be added to the same playlist. 
+            id: uuidv4(),
             title: track.name,
             artist: track.artists[0]?.name || "Unkown Artist",
             album: track.album.name,
@@ -35,7 +52,8 @@ function PlaylistDetails() {
             albumCover: track.album.images.length > 0 ? track.album.images[0].url : "",
         }
         
-        addSongToPlaylist(playlist.id, newSong);
+        console.log(newSong);
+        addSongToPlaylist(playlist._id, newSong);
         
     };
 
@@ -46,13 +64,18 @@ function PlaylistDetails() {
     };
     
 
+    const handleSave = async () => {
+        await updatePlaylistTitleAndDescription(playlist._id, editedTitle, editedDescription);
+        console.log("here");
+        setIsEditing(false);
+    }
 
 
     return (
         <div className="flex flex-col p-6 rounded-lg shadow-md text-white ml-20 mr-20">
             <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 w-fit"
-                onClick={() => setIsEditing(!isEditing)}
+                onClick={isEditing ? handleSave : () => setIsEditing(true)}
             >
                 {isEditing ? "Save Playlist" : "Edit Playlist"}
             </button>
@@ -60,19 +83,20 @@ function PlaylistDetails() {
             <div className="my-4 border-t border-gray-700"></div>
 
             {isEditing  
-                ? <div  className="flex flex-col mb-4 p-6 rounded-lg bg-gray-900 text-left">
+                ? <div className="flex flex-col mb-4 p-6 rounded-lg bg-gray-900 text-left">
                     <input 
                         className = "m-3 bg-gray-800 border border-gray-700 rounded p-2 text-white"
                         type = "text"
-                        value = {playlist.title}
-                        onChange = {(e) => updatePlaylistTitleAndDescription(playlist.id, e.target.value, playlist.description)}
+                        value = {editedTitle}
+                        onChange = {(e) => setEditedTitle(e.target.value)}
                     ></input>
 
                     <input 
                         className = "m-3 bg-gray-800 border border-gray-700 rounded p-2 text-white placeholder-gray-500"
                         type = "text"
-                        value = {playlist.description}
-                        onChange = {(e) => updatePlaylistTitleAndDescription(playlist.id, playlist.title, e.target.value)}
+                        value = {editedDescription}
+                        placeholder = "Description"
+                        onChange = {(e) => setEditedDescription(e.target.value)}
                     ></input>
                 </div>
                 : 
@@ -116,7 +140,7 @@ function PlaylistDetails() {
                         {isEditing && (
                             <button
                                 className="w-6 h-6 ml-5 rounded-full bg-red-500 text-white text-l items-center text-center font-bold hover:cursor-pointer"
-                                onClick={() => removeSongFromPlaylist(playlist.id, song.id)}
+                                onClick={() => removeSongFromPlaylist(playlist._id, song.id)}
                             >
                                 &#8722;
                             </button>
@@ -137,7 +161,10 @@ function PlaylistDetails() {
 
                     <div 
                         className = "flex justify-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md mt-4"
-                        onClick = {() => deletePlaylist(playlist.id)}
+                        onClick = {async () => {
+                            await deletePlaylist(playlist._id);
+                            router.push("/playlists");
+                        }}
                     >Delete Playlist</div>
 
                 </div>

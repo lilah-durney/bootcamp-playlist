@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Playlist, Song } from '@/types/playlist';
+import { PlaylistObj, Song } from '@/types/playlist';
 
 //Shared memory storage (same one in playlists.ts)
-let playlists: Playlist[] = [];
+let playlists: PlaylistObj[] = [];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
-  const playlist = playlists.find((p) => p.id === id);
+  const playlist = playlists.find((p) => p._id === id);
 
   if (!playlist) {
     return res.status(404).json({ error: 'Playlist not found' });
