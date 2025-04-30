@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import type {Track} from "@/types/playlist"
-import {CheckCircle} from "lucide-react"
+import {CheckCircle, LoaderCircle} from "lucide-react"
 
 const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => void; onSave: (track: Track) => void}) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -9,25 +9,37 @@ const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => v
     const [trackAddedId, setTrackAddedId] = useState<string | null>(null);
     const [anySongAdded, setAnySongAdded] = useState(false)
 
+    const [status, setStatus] = useState("idle");
+
 
     const searchTracks = async (searchTerm: string) => {
+        setStatus("loading");
         try {
           const response = await fetch(`/api/spotify-search?q=${encodeURIComponent(searchTerm)}`);
           const data = await response.json();
-          console.log("Search results:", data.tracks)
-          setSearchResults(data.tracks ?? []);
+          if (data.tracks?.length > 0) {
+            setSearchResults(data.tracks ?? []);
+            setStatus("success");
+
+          } else {
+            setSearchResults([]);
+            setStatus("no_results")
+          }
+
         } catch(error) {
           console.error("Error fetching songs:", error);
+          setStatus("error");
         }
       }      
 
 
     useEffect(() => {
-        // Clear search term when modal is closed
+        //Reset consts when modal gets closed.
         if (!isOpen) {
             setSearchTerm(''); 
             setSearchResults([]); 
             setAnySongAdded(false);
+            setStatus('idle');
 
         }
     }, [isOpen]);
@@ -64,40 +76,59 @@ const SongModal = ({isOpen, onClose, onSave}: {isOpen: boolean; onClose: () => v
                     onChange={(e) => setSearchTerm(e.target.value)}
                 ></input>
 
+
         
                 <div className="flex-1 mt-4 overflow-y-auto">
-                    <ul className="max-h-96 overflow-y-auto">
-                        {searchResults.map((track) => (
-                            <li key={track.id} className="text-white p-3 hover:bg-gray-700 flex justify-between items-center">
-                                <div className="flex items-center space-x-3">
-                                    {track.album.images.length > 0 && (
-                                        <img src={track.album.images[0].url} alt={`${track.name} album cover`} className="w-16 h-16 rounded" />
-                                    )}
-                                    <div>
-                                        <p className="font-semibold text-lg">{track.name}</p>
-                                        <p className="text-sm text-gray-400">{track.artists[0]?.name} • {track.album.name}</p>
-                                    </div>
-                                </div>
-                                {trackAddedId === track.id ? (
-                                    <CheckCircle className = "text-green-500 w-6 h-6 animate-bounce"/>
-                                ) : (
-                                    <button
-                                    className="ml-2 bg-green-500 px-4 py-2 rounded text-white hover:bg-green-600 transition"
-                                    onClick={() => {
-                                        onSave(track)
-                                        setTrackAddedId(track.id)
-                                        setTimeout(() => setTrackAddedId(null), 2000);
-                                        setAnySongAdded(true);
-                                    }}
-                                >
-                                    Add
-                                </button>
+                    {status === "loading" && (
+                        <div className = "flex justify-center items-center mt-10">
+                            <LoaderCircle className = "h-8 w-8 animate-spin text-white"></LoaderCircle>
+                        </div>
+                    )}
 
-                                )}
+                    {status === "error" && (
+                        <p className = "text-red-500 text-center mt-4">Something went wrong. Please try again.</p>
+                    )}
 
-                            </li>
-                        ))}
-                    </ul>
+                    {status === "no_results" && (
+                        <p className = "text-gray-400 text-center mt-4">No results found.</p>
+                    )}
+
+                    {status === "success" && (
+                                            <ul className="max-h-96 overflow-y-auto">
+                                            {searchResults.map((track) => (
+                                                <li key={track.id} className="text-white p-3 hover:bg-gray-700 flex justify-between items-center">
+                                                    <div className="flex items-center space-x-3">
+                                                        {track.album.images.length > 0 && (
+                                                            <img src={track.album.images[0].url} alt={`${track.name} album cover`} className="w-16 h-16 rounded" />
+                                                        )}
+                                                        <div>
+                                                            <p className="font-semibold text-lg">{track.name}</p>
+                                                            <p className="text-sm text-gray-400">{track.artists[0]?.name} • {track.album.name}</p>
+                                                        </div>
+                                                    </div>
+                                                    {trackAddedId === track.id ? (
+                                                        <CheckCircle className = "text-green-500 w-6 h-6 animate-bounce"/>
+                                                    ) : (
+                                                        <button
+                                                        className="ml-2 bg-green-500 px-4 py-2 rounded text-white hover:bg-green-600 transition"
+                                                        onClick={() => {
+                                                            onSave(track)
+                                                            setTrackAddedId(track.id)
+                                                            setTimeout(() => setTrackAddedId(null), 2000);
+                                                            setAnySongAdded(true);
+                                                        }}
+                                                    >
+                                                        Add
+                                                    </button>
+                    
+                                                    )}
+                    
+                                                </li>
+                                            ))}
+                                        </ul>
+
+                    )}
+
                 </div>
 
         

@@ -72,9 +72,9 @@ function PlaylistDetails() {
 
 
     return (
-        <div className="flex flex-col p-6 rounded-lg shadow-md text-white ml-20 mr-20">
+        <div className="flex flex-col p-6 rounded-lg shadow-lg text-white ml-20 mr-20">
             <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 w-fit"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 w-fit hover:bg-blue-600"
                 onClick={isEditing ? handleSave : () => setIsEditing(true)}
             >
                 {isEditing ? "Save Playlist" : "Edit Playlist"}
@@ -83,7 +83,7 @@ function PlaylistDetails() {
             <div className="my-4 border-t border-gray-700"></div>
 
             {isEditing  
-                ? <div className="flex flex-col mb-4 p-6 rounded-lg bg-gray-900 text-left">
+                ? <div className="flex flex-col mb-4 p-6 rounded-lg bg-gray-900 text-left shadow-m">
                     <input 
                         className = "m-3 bg-gray-800 border border-gray-700 rounded p-2 text-white"
                         type = "text"
